@@ -1,0 +1,58 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>เปิดกล้องและถ่ายภาพ</title>
+  <style>
+    video, canvas {
+      width: 100%;
+      max-width: 480px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h2>กล้องของคุณ</h2>
+  <video id="video" autoplay></video>
+  <br>
+  <button onclick="capture()">📸 ถ่ายภาพ</button>
+  <a id="downloadLink" download="captured.png" style="display:none;">
+    <button>💾 ดาวน์โหลดภาพ</button>
+  </a>
+  <br><br>
+  <canvas id="canvas" style="display:none;"></canvas>
+
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const downloadLink = document.getElementById('downloadLink');
+
+    // เปิดกล้อง
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        video.srcObject = stream;
+      })
+      .catch(error => {
+        alert('ไม่สามารถเปิดกล้องได้: ' + error.message);
+      });
+
+    function capture() {
+      const context = canvas.getContext('2d');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const imageData = canvas.toDataURL('image/png');
+      downloadLink.href = imageData;
+      canvas.style.display = 'block';
+      downloadLink.style.display = 'inline';
+    }
+  </script>
+</body>
+</html>
